@@ -6,6 +6,7 @@ extern crate regex;
 use clap::{Arg,App};
 
 mod day1;
+mod day2;
 
 fn main() {
 
@@ -37,6 +38,7 @@ fn main() {
 	let day = matches.value_of("day").unwrap().parse::<u32>().unwrap();
 	match day {
 		1 => day1::solve(),
+		2 => day2::solve(),
 		_ => println!("Oops! Day {} isn't implemented yet!", day)
 	}
 }
