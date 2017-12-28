@@ -23,6 +23,7 @@ mod day13;
 mod day14;
 mod day15;
 mod day16;
+mod day17;
 
 fn main() {
 
@@ -69,6 +70,7 @@ fn main() {
 		14 => day14::solve(),
 		15 => day15::solve(),
 		16 => day16::solve(),
+		17 => day17::solve(),
 		_ => println!("Oops! Day {} isn't implemented yet!", day)
 	}
 }
