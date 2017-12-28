@@ -19,16 +19,23 @@ pub fn solve() {
 	let passcode = stdin.lock().lines().next().unwrap().unwrap().to_string();
 
 	let mut queue = VecDeque::new();
-
 	queue.push_back(State { pos: (0,0), path: String::from("")});
+
+	let mut longest_solution  : Option<usize> = None;
 
 	while !queue.is_empty() {
 		let s = queue.pop_front().unwrap();
 
 		// println!("At: {},{}, path = {}", s.pos.0, s.pos.1, s.path);
 		if s.pos == (3,3) {
-			println!("Part 1: {}", s.path);
-			break;
+			if longest_solution.is_none() {
+				println!("Part 1: {}", s.path);
+			}
+			if s.path.len() > longest_solution.unwrap_or(0) {
+				longest_solution = Some(s.path.len())
+			}
+
+			continue;
 		}
 
 		let digest_str = format!("{:x}", md5::compute(format!("{}{}", passcode, s.path))).chars().collect::<Vec<char>>();
@@ -44,4 +51,6 @@ pub fn solve() {
 		try_move((s.pos.0 - 1, s.pos.1), digest_str[2], "L", &s);
 		try_move((s.pos.0 + 1, s.pos.1), digest_str[3], "R", &s);
 	}
+
+	println!("Part 2: {}", longest_solution.unwrap());
 }
