@@ -1,5 +1,4 @@
 use std::io::{self, BufRead};
-// use std::collections::VecDeque;
 
 fn is_trap(prev : &[bool; 3]) -> bool {
 	prev == &[true, true, false]
@@ -8,35 +7,42 @@ fn is_trap(prev : &[bool; 3]) -> bool {
 	 || prev == &[false, false, true]
 }
 
+fn build_next_row(input : &Vec<bool>) -> Vec<bool> {
+	let grid_size = input.len();
+	(0..grid_size).map(|c| {
+		let prev = if c == 0 { [false, input[c], input[c+1]] }
+					else if c == grid_size-1 { [input[c-1], input[c], false] }
+					else { [input[c-1], input[c], input[c+1]] };
+
+		is_trap(&prev)
+	}).collect::<Vec<bool>>()
+}
+
+struct RoomGenerator {
+	next: Vec<bool>,
+}
+
+impl RoomGenerator {
+	fn new(initial_row : Vec<bool>) -> RoomGenerator {
+		RoomGenerator { next: initial_row }
+	}
+}
+
+impl Iterator for RoomGenerator {
+	type Item = Vec<bool>;
+
+	fn next(&mut self) -> Option<Vec<bool>> {
+		let current = self.next.clone(); // Can't move for some reason...
+		self.next = build_next_row(&current);
+		Some(current)
+	}
+}
+
 pub fn solve() {
 	let stdin = io::stdin();
 	let input = stdin.lock().lines().next().unwrap().unwrap().to_string();
+	let initial_row = input.chars().map(|ch| ch == '^').collect::<Vec<_>>();
 
-	let mut grid = Vec::<Vec<bool>>::new();
-	grid.push(input.chars().map(|ch| ch == '^').collect::<Vec<_>>());
-
-	let grid_size = grid[0].len();
-	for _ in 1..grid_size {
-		let mut row = vec![false; grid_size];
-
-		{ 	// Lifetime scope for immutable borrow of grid via grid.last
-			let prev_row = grid.last().unwrap();
-
-			for c in 0..grid_size {
-				let prev = if c == 0 { [false, prev_row[c], prev_row[c+1]] }
-							else if c == grid_size-1 { [prev_row[c-1], prev_row[c], false] }
-							else { [prev_row[c-1], prev_row[c], prev_row[c+1]] };
-
-				row[c] = is_trap(&prev);
-			}
-
-		}
-		grid.push(row);
-	}
-
-	for row in &grid {
-		println!("{}", row.iter().map(|&b| if b { '^' } else { '.' }).collect::<String>());
-	}
-
-	println!("Part 1: {} (safe tiles)", grid.iter().map(|row| row.iter().filter(|&b| *b == false).count()).sum::<usize>());
+	println!("Part 1: {} (safe tiles)", RoomGenerator::new(initial_row.clone()).take(40).map(|row| row.iter().filter(|&b| *b == false).count()).sum::<usize>());
+	println!("Part 2: {} (safe tiles)", RoomGenerator::new(initial_row).take(400000).map(|row| row.iter().filter(|&b| *b == false).count()).sum::<usize>());
 }
