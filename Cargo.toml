@@ -8,6 +8,7 @@ clap = "*"
 regex = "*"
 md5 = "*"
 lazy_static = "*"
+permutohedron = "*"
 
 [[bin]]
 name = "aoc"
