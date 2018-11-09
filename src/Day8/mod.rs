@@ -43,7 +43,7 @@ pub fn solve() {
 				match parts[1] {
 					"row" => {
 						let offset = target * COLUMNS;
-						grid[offset..(offset+COLUMNS)].rotate(COLUMNS-amount);
+						grid[offset..(offset+COLUMNS)].rotate_right(amount);
 					},
 					"column" => {
 						rotate_column(&mut grid, target, ROWS - amount)

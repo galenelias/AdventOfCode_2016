@@ -1,6 +1,3 @@
-#![feature(slice_rotate)]
-#![feature(iterator_step_by)]
-
 extern crate clap;
 extern crate regex;
 extern crate md5;

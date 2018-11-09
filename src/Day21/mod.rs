@@ -21,12 +21,12 @@ fn scramble(mut password : Vec<char>, instructions : &Vec<Vec<String>>) -> Vec<c
 			"rotate" => {
 				let amount = line[2].parse::<usize>();
 				match line[1].as_ref() {
-					"left" => password.rotate(amount.unwrap()),
-					"right" => password.rotate(password_len - amount.unwrap()),
+					"left" => password.rotate_left(amount.unwrap()),
+					"right" => password.rotate_right(amount.unwrap()),
 					"based" => {
 						let pos = password.iter().position(|&ch| ch == line[6].chars().next().unwrap()).unwrap();
-						let rotate_pos = password_len - (((pos + 1) + (if pos >= 4 { 1 } else { 0} )) % password_len);
-						password.rotate(rotate_pos);
+						let rotate_pos = ((pos + 1) + (if pos >= 4 { 1 } else { 0} )) % password_len;
+						password.rotate_right(rotate_pos);
 					}
 					_ => panic!("Bad rotate"),
 
