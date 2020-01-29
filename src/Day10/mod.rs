@@ -47,7 +47,7 @@ pub fn solve() {
 
 			let instruction = bot_instructions.get(&name).unwrap();
 			for i in 0..2 {
-				let mut dest = match instruction.target_types[i].as_ref() {
+				let dest = match instruction.target_types[i].as_ref() {
 					"bot" => bots.get(&instruction.target_nums[i]).unwrap(),
 					"output" => outputs.entry(instruction.target_nums[i]).or_insert(RefCell::new(Vec::new())),
 					_ => panic!("Unexpected destination token: {}", instruction.target_types[i]),
