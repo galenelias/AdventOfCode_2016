@@ -1,11 +1,21 @@
 use std::io::{self, BufRead};
 use md5;
 
+fn is_special(digest: &md5::Digest) -> bool {
+	digest.0[0] == 0 && digest.0[1] == 0 && digest.0[2] <= 15
+}
+
 fn part1(input : &str)
 {
 	let mut password = String::new();
 	for i in 0.. {
-		let digest_str = format!("{:x}", md5::compute(format!("{}{}", input, i)));
+		let digest = md5::compute(format!("{}{}", input, i));
+
+		if !is_special(&digest) {
+			continue;
+		}
+
+		let digest_str = format!("{:x}", digest);
 		if digest_str.chars().take(5).all(|c| c == '0') {
 			password.push(digest_str.chars().nth(5).unwrap());
 
@@ -22,7 +32,13 @@ fn part2(input : &str)
 {
 	let mut password : Vec<char> = vec![' '; 8];
 	for i in 0.. {
-		let digest_str = format!("{:x}", md5::compute(format!("{}{}", input, i)));
+		let digest = md5::compute(format!("{}{}", input, i));
+
+		if !is_special(&digest) {
+			continue;
+		}
+
+		let digest_str = format!("{:x}", digest);
 		let digest_arr = digest_str.chars().collect::<Vec<char>>();
 		if digest_arr.iter().take(5).all(|c| c == &'0') {
 			let slot = digest_arr[5].to_digit(10).unwrap_or(9) as usize;
